@@ -1,0 +1,124 @@
+:root {
+  /* Fonts */
+  --font-family: "Montserrat", sans-serif;
+
+  /* Font sizes */
+  --font-size-base: 16px;
+  --font-size-btn: 18px;
+  --font-size-mg-sub-title: 24px;
+  --font-size-lg-sub-title: 32px;
+  --font-size-lg-mob-title: 40px;
+  --font-size-xl-title: 48px;
+
+  /* Font weights */
+  --font-weight-regular: 400;
+  --font-weight-bold: 600;
+  --font-weight-semiBold: 700;
+
+  /* Colors */
+  --color-primary: #fff;
+  --color-text: #000;
+
+  /* Backgrounds */
+  --bg-color-primary-container: #fbfcf8;
+  --bg-color-btn: #9b6c43;
+  --bg-color-btn-delete: #c80000;
+  --bg-color-white: #fff;
+  --bg-color-modal-and-card: #faf3e0;
+  --bg-color-header: #3d2218;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  line-height: 1.15; /* normalize */
+  -webkit-text-size-adjust: 100%; /* prevent iOS zoom */
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-family);
+  line-height: 1.5;
+  margin: 0;
+  height: 100%;
+  background: var(--bg-color-primary-container);
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   Normalize / Reset (v8.0.1)
+   ========================================================================== */
+
+main {
+  display: block;
+  flex: 1;
+}
+
+footer {
+  margin-top: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  border-style: none; /* IE10 fix */
+}
+
+.button:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+a {
+  background-color: transparent;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Далі можна залишати увесь normalize.css як є (hr, pre, abbr, etc.)
+   — я не дублюю тут повністю, щоб не перевантажувати */
+
+/* ==========================================================================
+   Custom global layout
+   ========================================================================== */
+
+main {
+  flex: 1; /* займає весь доступний простір */
+}
+
+footer {
+  margin-top: auto; /* відправляє футер донизу */
+}
