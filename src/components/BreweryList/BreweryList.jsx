@@ -11,13 +11,16 @@ import {
   addToFavourites,
   removeFromFavourites,
 } from "../../redux/favourite/favouritesSlice.js";
+import { selectorHiddenBreweryIds } from "../../redux/breweries/hiddenBreweries/selectors.js";
+import { hideMany } from "../../redux/breweries/hiddenBreweries/hiddenBreweryIdsSlice.js";
 
-export default function BreweryList({id}) {
+export default function BreweryList({ id }) {
   const dispatch = useDispatch();
   const isLoading = useSelector(selectLoading);
   const items = useSelector(selectBreweries);
   const [page, setPage] = useState(1);
   const favourites = useSelector(selectFavouritesBrew);
+  // const hiddenBrewery = useSelector(selectorHiddenBreweryIds);
 
   const isFavourites = favourites.includes(id);
 
@@ -37,6 +40,7 @@ export default function BreweryList({id}) {
   };
 
   const handdleDeleteAll = () => {
+    dispatch(hideMany(favourites));
     favourites.forEach((id) => dispatch(removeFromFavourites(id)));
   };
 

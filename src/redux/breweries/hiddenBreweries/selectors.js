@@ -1,0 +1,1 @@
+export const selectorHiddenBreweryIds = (state)=> state.hiddenIds.hiddenBreweryIds;
