@@ -4,7 +4,7 @@
     gap: 10px;
     align-items: center;
     justify-content: center;
-     margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .li {
@@ -15,7 +15,7 @@
     width: 350px;
     height: 80px;
     padding: 8px;
-   
+
     background-color: yellow;
 
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -24,4 +24,10 @@
 
 .li:hover {
     background-color: rgb(216, 212, 7);
+}
+
+.selected {
+    background-color: rgb(216, 212, 7);
+    
+    border: 2px solid #080808;
 }
