@@ -5,6 +5,7 @@ import {
 } from "../../redux/breweries/selectors.js";
 import { useEffect, useState } from "react";
 import { fetchBreweries } from "../../redux/breweries/operations.js";
+import css from "./BreweryLIst.module.css"
 
 export default function BreweryList() {
   const dispatch = useDispatch();
@@ -20,12 +21,17 @@ export default function BreweryList() {
 
   return (
     <div>
-      <ul>
+      {isLoading && <p>Loading breweries...</p>}
+      <ul className={css.ul}>
         {items.map((brewery) => (
-          <li key={brewery.id}>{brewery.name}</li>
+          <li key={brewery.id} className={css.li}>
+          <p>{brewery.name}</p>
+          <p>{brewery.brewery_type}</p>
+          <p>{brewery.city}</p>
+          </li>
         ))}
       </ul>
-        {isLoading && <p>Loading breweries...</p>}
+      
       {!isLoading && <button onClick={handleLoadMore}>Load more</button>}
     </div>
   );

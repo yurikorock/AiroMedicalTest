@@ -1,0 +1,1 @@
+export const selectFavouritesBrew = (state) => state.favourites.idBrewery;
