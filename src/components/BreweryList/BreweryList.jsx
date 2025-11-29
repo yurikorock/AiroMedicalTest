@@ -3,17 +3,20 @@ import {
   selectBreweries,
   selectLoading,
 } from "../../redux/breweries/selectors.js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchBreweries } from "../../redux/breweries/operations.js";
 
 export default function BreweryList() {
   const dispatch = useDispatch();
-  const loading = useSelector(selectLoading);
+  const isLoading = useSelector(selectLoading);
   const items = useSelector(selectBreweries);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    dispatch(fetchBreweries());
-  }, [dispatch]);
+    dispatch(fetchBreweries(page));
+  }, [dispatch, page]);
+
+  const handleLoadMore = () => setPage((prev) => prev + 1);
 
   return (
     <div>
@@ -22,6 +25,8 @@ export default function BreweryList() {
           <li key={brewery.id}>{brewery.name}</li>
         ))}
       </ul>
+        {isLoading && <p>Loading breweries...</p>}
+      {!isLoading && <button onClick={handleLoadMore}>Load more</button>}
     </div>
   );
 }

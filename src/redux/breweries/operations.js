@@ -5,8 +5,11 @@ axios.defaults.baseURL = "https://api.openbrewerydb.org/v1";
 
 export const fetchBreweries = createAsyncThunk(
   "breweries/fetchBreweries",
-  async () => {
-    const response = await axios.get("/breweries");
+  async (page) => {
+    const response = await axios.get("/breweries", {params: {
+        per_page: 15,
+        page,
+    }});
     return response.data;
   }
 );

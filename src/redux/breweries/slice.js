@@ -10,9 +10,14 @@ const breweriesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchBreweries.pending, (state) => {
+      .addCase(fetchBreweries.pending, (state, action) => {
         state.loading = true;
         state.error = null;
+
+        // якщо page = 1 ⇒ очищаємо список
+        if (action.meta.arg === 1) {
+          state.items = [];
+        }
       })
       .addCase(fetchBreweries.fulfilled, (state, action) => {
         state.loading = false;
@@ -24,6 +29,5 @@ const breweriesSlice = createSlice({
       });
   },
 });
-
 
 export default breweriesSlice.reducer;
