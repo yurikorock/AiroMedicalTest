@@ -8,7 +8,7 @@ export const fetchBreweries = createAsyncThunk(
   async (page) => {
     const response = await axios.get("/breweries", {
       params: {
-        per_page: 15,
+        // per_page: 15,
         page,
       },
     });
