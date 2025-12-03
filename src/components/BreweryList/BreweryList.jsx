@@ -3,7 +3,7 @@ import {
   selectBreweries,
   selectLoading,
 } from "../../redux/breweries/selectors.js";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fetchBreweries } from "../../redux/breweries/operations.js";
 import css from "./BreweryLIst.module.css";
 import { selectFavouritesBrew } from "../../redux/favourite/favouritesSelector.js";
@@ -15,37 +15,62 @@ import { selectorHiddenBreweryIds } from "../../redux/breweries/hiddenBreweries/
 import { hideMany } from "../../redux/breweries/hiddenBreweries/hiddenBreweryIdsSlice.js";
 
 export default function BreweryList() {
-  const [page, setPage] = useState(1);
-  const [displayedItems, setDisplayedItems] = useState([]);
+  const PAGE_SIZE_FROM_API = 50; //  backend page size
+  const TARGET_UI_COUNT = 15; // how many we show in UI
+
   const dispatch = useDispatch();
   const isLoading = useSelector(selectLoading);
-  const items = useSelector(selectBreweries);
-  const favourites = useSelector(selectFavouritesBrew);
-  const hiddenBrewery = useSelector(selectorHiddenBreweryIds);
+  const items = useSelector(selectBreweries); //все отримано на даний момент
+  const favourites = useSelector(selectFavouritesBrew); // array of ids коли вибрані
+  const hiddenBrewery = useSelector(selectorHiddenBreweryIds); // array of ids коли видалені delete
 
-  // завантажуємо нову сторінку пивоварень
+  const [page, setPage] = useState(1);
+  const [displayedItems, setDisplayedItems] = useState([]); // те що показуємо в UI (<= 15)
+
+  // отримуємо пивоварні коли зміни сторінки
   useEffect(() => {
     dispatch(fetchBreweries(page));
   }, [dispatch, page]);
 
+  // видимі елементи = отримуємо елементи окрім прихованих
+  const visible = useMemo(() => {
+    return items.filter((b) => !hiddenBrewery.includes(b.id));
+  }, [items, hiddenBrewery]);
+
   // оновлюємо displayedItems при завантаженні items або прихованих елементів
   useEffect(() => {
-    const visible = items.filter((b) => !hiddenBrewery.includes(b.id));
-    // якщо displayedItems порожній, беремо перші 15
-    if (displayedItems.length === 0) {
-      setDisplayedItems(visible.slice(0, 15));
-    } else {
-      // підтягуємо додаткові елементи, якщо забрано якісь
-      if (displayedItems.length < 15) {
-        const needed = 15 - displayedItems.length;
-        const alreadyDisplayedId = displayedItems.map((brewery) => brewery.id);
-        const additional = visible.filter(
-          (brewery) => !alreadyDisplayedId.includes(brewery.id)
-        );
-        setDisplayedItems((prev) => [...prev, ...additional.slice(0, needed)]);
+    setDisplayedItems((prev) => {
+      const prevIds = new Set(prev.map((b) => b.id));
+      // зберегти раніше відображені елементи, які все ще видимі
+      const stillVisible = prev.filter((b) => !hiddenBrewery.includes(b.id));
+      //якщо все ще видимі повернути їх та обрізати до 15
+      if (stillVisible >= TARGET_UI_COUNT) {
+        return stillVisible.slice(0, TARGET_UI_COUNT);
       }
-    }
-  }, [items, hiddenBrewery]);
+      // поповняємо баланс з видимих які ще не відображаються
+      const alreadyShownIds = new Set(stillVisible.map((b) => b.id));
+      const additional = visible.filter((b) => !alreadyShownIds.has(b.id));
+
+      const needed = TARGET_UI_COUNT - stillVisible.length;
+      const topped = [
+        ...stillVisible,
+        ...additional.slice(0, Math.max(0, needed)),
+      ];
+      return topped;
+    });
+  }, [visible, hiddenBrewery]);
+
+  // рахуємо: чи залишилися ще «запасні» пивоварні в уже завантажених даних, які ще не показані в UI.
+  const remainingBufferCount = useMemo(() => {
+    const displayedIds = new Set(displayedItems.map((b) => b.id));
+    return visible.filter((b) => !displayedIds.has(b.id)).length;
+  }, [visible, displayedItems]);
+
+  //якщо може бути більше сторінок з бекенду
+  const mightHaveMorePages = items.length >= page * PAGE_SIZE_FROM_API;
+
+  const shouldShowLoadMore =
+    !isLoading && remainingBufferCount === 0 && mightHaveMorePages;
 
   const handleLoadMore = () => setPage((prev) => prev + 1);
 
@@ -61,18 +86,6 @@ export default function BreweryList() {
   const handleDeleteAll = () => {
     dispatch(hideMany(favourites));
     favourites.forEach((id) => dispatch(removeFromFavourites(id)));
-
-    // прибираємо вибрані з displayedItems та підтягуємо стільки, скільки видалили
-    setDisplayedItems((prev) => {
-      const newDisplayed = prev.filter((b) => !favourites.includes(b.id));
-      const visible = items.filter(
-        (b) =>
-          !hiddenBrewery.includes(b.id) &&
-          !newDisplayed.map((d) => d.id).includes(b.id)
-      );
-      const needed = 15 - newDisplayed.length;
-      return [...newDisplayed, ...visible.slice(0, needed)];
-    });
   };
 
   return (
@@ -95,7 +108,9 @@ export default function BreweryList() {
         })}
       </ul>
 
-      {!isLoading && <button onClick={handleLoadMore}>Load more</button>}
+      {shouldShowLoadMore && (
+        <button onClick={handleLoadMore} disabled={isLoading}>Load more</button>
+      )}
       {favourites.length > 0 && (
         <button onClick={handleDeleteAll}>Delete</button>
       )}
