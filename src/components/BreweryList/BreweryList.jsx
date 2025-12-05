@@ -135,6 +135,7 @@ export default function BreweryList() {
 
   return (
     <div>
+       <h1>Breweries</h1>
       {isLoading && <p>Loading breweries...</p>}
       <ul className={css.ul}>
         {displayedItems.map((brewery) => {
