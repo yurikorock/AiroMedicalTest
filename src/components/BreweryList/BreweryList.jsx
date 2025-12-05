@@ -18,6 +18,7 @@ import { Link } from "react-router-dom";
 export default function BreweryList() {
   const PAGE_SIZE_FROM_API = 50; //  backend page size
   const TARGET_UI_COUNT = 15; // how many we show in UI
+  
 
   const dispatch = useDispatch();
   const isLoading = useSelector(selectLoading);
@@ -69,40 +70,6 @@ export default function BreweryList() {
   // Show Load more when:
   const shouldShowLoadMore = !isLoading && isLastUiPage && mightHaveMorePages;
 
-  // // оновлюємо displayedItems при завантаженні items або прихованих елементів
-  // useEffect(() => {
-  //   setDisplayedItems((prev) => {
-  //     const prevIds = new Set(prev.map((b) => b.id));
-  //     // зберегти раніше відображені елементи, які все ще видимі
-  //     const stillVisible = prev.filter((b) => !hiddenBrewery.includes(b.id));
-  //     //якщо все ще видимі повернути їх та обрізати до 15
-  //     if (stillVisible >= TARGET_UI_COUNT) {
-  //       return stillVisible.slice(0, TARGET_UI_COUNT);
-  //     }
-  //     // поповняємо баланс з видимих які ще не відображаються
-  //     const alreadyShownIds = new Set(stillVisible.map((b) => b.id));
-  //     const additional = visible.filter((b) => !alreadyShownIds.has(b.id));
-
-  //     const needed = TARGET_UI_COUNT - stillVisible.length;
-  //     const topped = [
-  //       ...stillVisible,
-  //       ...additional.slice(0, Math.max(0, needed)),
-  //     ];
-  //     return topped;
-  //   });
-  // }, [visible, hiddenBrewery]);
-
-  // рахуємо: чи залишилися ще «запасні» пивоварні в уже завантажених даних, які ще не показані в UI.
-  // const remainingBufferCount = useMemo(() => {
-  //   const displayedIds = new Set(displayedItems.map((b) => b.id));
-  //   return visible.filter((b) => !displayedIds.has(b.id)).length;
-  // }, [visible, displayedItems]);
-
-  //якщо може бути більше сторінок з бекенду
-  // const mightHaveMorePages = items.length >= page * PAGE_SIZE_FROM_API;
-
-  // const shouldShowLoadMore =
-  //   !isLoading && remainingBufferCount === 0 && mightHaveMorePages;
 
   const handleLoadMore = () => setPage((prev) => prev + 1);
 
