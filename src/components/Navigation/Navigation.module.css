@@ -4,3 +4,10 @@ align-items: center;
 justify-content: center;
 gap: 8px;
 }
+.link{
+text-decoration: none;
+color: black;
+}
+.isActive{
+color: rgb(233, 180, 7);
+}

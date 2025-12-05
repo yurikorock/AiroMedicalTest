@@ -12,6 +12,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/dashboard" element={<BreweryList />} />
+        <Route path="*" element={<p>404.... Page not found...</p>} />
       </Routes>
     </div>
   );
