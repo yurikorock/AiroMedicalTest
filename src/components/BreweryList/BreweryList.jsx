@@ -13,6 +13,7 @@ import {
 } from "../../redux/favourite/favouritesSlice.js";
 import { selectorHiddenBreweryIds } from "../../redux/breweries/hiddenBreweries/selectors.js";
 import { hideMany } from "../../redux/breweries/hiddenBreweries/hiddenBreweryIdsSlice.js";
+import { Link } from "react-router-dom";
 
 export default function BreweryList() {
   const PAGE_SIZE_FROM_API = 50; //  backend page size
@@ -135,7 +136,7 @@ export default function BreweryList() {
 
   return (
     <div>
-       <h1>Breweries</h1>
+       <h1 className={css.title}>Breweries</h1>
       {isLoading && <p>Loading breweries...</p>}
       <ul className={css.ul}>
         {displayedItems.map((brewery) => {
@@ -149,6 +150,8 @@ export default function BreweryList() {
               <p>{brewery.name}</p>
               <p>{brewery.brewery_type}</p>
               <p>{brewery.city}</p>
+              <Link to={`/dashboard/${brewery.id}`}>Details</Link>
+              
             </li>
           );
         })}
